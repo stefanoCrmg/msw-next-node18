@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import type { InferGetStaticPropsType, GetStaticProps } from 'next'
+import Link from 'next/link'
  
 type Repo = {
   name: string | string[]
@@ -15,7 +16,8 @@ export const getServerSideProps = (async (context) => {
 export default function Page({
   repo,
 }: InferGetStaticPropsType<typeof getServerSideProps>) {
-  const pokeQuery = useQuery(['somePokemon'], () => fetch(`https://pokeapi.co/api/v2/pokemon/${repo.name}`).then(_ => _.json()))
+  const pokeQuery = useQuery(['somePokemon'], () => fetch(`/api/pokemon/${repo.name}`).then(_ => _.json()))
+  const pokeMutation = useMutation(['putPokemon'], () => fetch('/api/pokemon/add', { method: 'POST'}), { onSuccess: () => pokeQuery.refetch()})
 
   if(pokeQuery.isError)
     return <div>Error fetching: {repo.name}</div>
@@ -25,10 +27,12 @@ export default function Page({
   
   return <div>
     <div className='font-bold bg-blue-400'>Pokemon name: {repo.name}</div>
+    <button onClick={() => pokeMutation.mutate()}>Aggiungi</button>
     <pre className='bg-yellow-200'>
       <code>
         {JSON.stringify(pokeQuery.data, null, 2)}
       </code>
     </pre>
+    <Link href='/pokemon/all'>Vai a all</Link>
     </div>
 }

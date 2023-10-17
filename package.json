@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.2.0",
+    "@mswjs/data": "^0.14.0",
     "@tanstack/react-query": "^4.36.1",
     "msw": "0.0.0-fetch.rc-22",
     "next": "13.5.4",
